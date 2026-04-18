@@ -162,4 +162,3 @@ Target metrics:
 - Risk/reward: 1.5:1+
 - Max drawdown: <15%
 - Survival rate (Monte Carlo): >95%
-# Auto-saved Sat Apr 18 13:37:07 +04 2026
