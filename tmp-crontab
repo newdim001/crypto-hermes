@@ -1,0 +1,5 @@
+# CryptoEdge Cron Jobs
+0 * * * * cd /Users/suren/.openclaw/workspace/crypto-edge && node services/ml/ml-trading-runner.js run >> /Users/suren/.openclaw/workspace/crypto-edge/logs/trading.log 2>&1
+*/30 * * * * cd /Users/suren/.openclaw/workspace/crypto-edge && node services/data-collector.js >> /Users/suren/.openclaw/workspace/crypto-edge/logs/data.log 2>&1
+0 0 * * * cd /Users/suren/.openclaw/workspace/crypto-edge && node services/performance-report.js >> /Users/suren/.openclaw/workspace/crypto-edge/logs/performance.log 2>&1
+0 7 * * 1 cd /Users/suren/.openclaw/workspace/crypto-edge && node services/weekly-report.js >> /Users/suren/.openclaw/workspace/crypto-edge/logs/weekly-report.log 2>&1

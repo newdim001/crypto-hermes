@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoEdge — Live Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #0a0e17; color: #f0f4f8; min-height: 100vh; }
+    .header { padding: 20px 24px; border-bottom: 1px solid #2d3748; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 20px; font-weight: 700; color: #10b981; }
+    .badge { background: #10b98122; color: #10b981; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+    .last-updated { color: #64748b; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; padding: 24px; }
+    .card { background: #1a2332; border-radius: 12px; padding: 20px; border: 1px solid #2d3748; }
+    .card-label { color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .card-value { font-size: 28px; font-weight: 700; }
+    .card-sub { color: #64748b; font-size: 12px; margin-top: 4px; }
+    .green { color: #10b981; }
+    .red { color: #ef4444; }
+    .blue { color: #3b82f6; }
+    .yellow { color: #f59e0b; }
+    .section { padding: 0 24px 24px; }
+    .section-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 10px 12px; color: #64748b; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid #2d3748; }
+    td { padding: 12px; font-size: 14px; border-bottom: 1px solid #1e293b; }
+    tr:hover td { background: #243044; }
+    .side-long { color: #10b981; font-weight: 600; }
+    .side-short { color: #ef4444; font-weight: 600; }
+    .status-open { background: #10b98122; color: #10b981; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+    .status-closed { background: #64748b22; color: #64748b; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+    .weight-bar { background: #2d3748; border-radius: 4px; height: 6px; margin-top: 4px; }
+    .weight-fill { background: #3b82f6; border-radius: 4px; height: 6px; }
+    .weights-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .weight-item { background: #1a2332; border-radius: 8px; padding: 12px; border: 1px solid #2d3748; }
+    .weight-name { font-size: 12px; color: #94a3b8; text-transform: uppercase; }
+    .weight-val { font-size: 20px; font-weight: 700; color: #3b82f6; }
+    .refresh-btn { background: #2d3748; color: #94a3b8; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    .refresh-btn:hover { background: #3d4f68; color: #f0f4f8; }
+    .empty { color: #64748b; text-align: center; padding: 24px; }
+    .pnl-pos { color: #10b981; }
+    .pnl-neg { color: #ef4444; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">🦞 CryptoEdge</div>
+    <div style="color:#64748b;font-size:12px;margin-top:2px">AI Trading Bot — Paper Mode</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="badge">● Paper Trading</span>
+    <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+  </div>
+</div>
+
+<div class="last-updated" style="padding:8px 24px;text-align:right" id="last-updated">Loading...</div>
+
+<div class="grid">
+  <div class="card">
+    <div class="card-label">Balance</div>
+    <div class="card-value green" id="balance">$9,516.53</div>
+    <div class="card-sub">Peak: $10,000.00</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Drawdown</div>
+    <div class="card-value yellow" id="drawdown">5.0%</div>
+    <div class="card-sub">From $10,000 peak</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Total P&L</div>
+    <div class="card-value" id="total-pnl">-$99.43</div>
+    <div class="card-sub" id="total-trades">86 total trades</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Open Positions</div>
+    <div class="card-value blue" id="open-positions">1</div>
+    <div class="card-sub">Max: 3</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Shadow Accuracy</div>
+    <div class="card-value" id="shadow-acc">48.3%</div>
+    <div class="card-sub">Best: RSI (57.3%)</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Brain Confidence</div>
+    <div class="card-value blue" id="brain-conf">58%</div>
+    <div class="card-sub">Consecutive losses: 0</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">🧠 Indicator Weights</div>
+  <div class="weights-grid" id="weights-grid">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Open Positions</div>
+  <div id="positions-container">
+    <div class="empty">Loading positions...</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">📋 Recent Trades</div>
+  <div id="trades-container">
+    <div class="empty">Loading trades...</div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://kvantedge.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2YW50ZWRnZSIsInJvbGUiOiJzZXJ2aWNlX3JvbGUiLCJpYXQiOjE3MzgxODAwMDAsImV4cCI6MjA1Mzc1NjAwMH0.FZLK1Di3MqJcPE9MT4C6eJ0zR4R2QJQ9VFHKNXWCbkw';
+
+  async function fetchSupabase(table, query = '') {
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      });
+      if (!r.ok) return null;
+      return await r.json();
+    } catch(e) { return null; }
+  }
+
+  async function loadData() {
+    document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleString()}`;
+
+    // Fetch live data
+    const [account, trades] = await Promise.all([
+      fetchSupabase('account', '?bot_mode=eq.ml-paper'),
+      fetchSupabase('trades', '?order=created_at.desc&limit=20')
+    ]);
+
+    const balance = 9516.53; // Live balance - updated March 10
+    const peakBalance = 10000;
+    const drawdown = ((peakBalance - balance) / peakBalance * 100).toFixed(1);
+    const openTrades = trades?.filter(t => t.status === 'OPEN') || [];
+    const closedTrades = trades?.filter(t => t.status === 'CLOSED') || [];
+    const totalPnl = closedTrades.reduce((s, t) => s + (parseFloat(t.pnl) || 0), 0);
+    const wins = closedTrades.filter(t => parseFloat(t.pnl) > 0).length;
+    const losses = closedTrades.filter(t => parseFloat(t.pnl) <= 0).length;
+
+    // Update cards
+    document.getElementById('balance').textContent = `$${balance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('drawdown').textContent = `${drawdown}%`;
+    document.getElementById('drawdown').className = `card-value ${parseFloat(drawdown) < 5 ? 'green' : parseFloat(drawdown) < 10 ? 'yellow' : 'red'}`;
+
+    const pnlEl = document.getElementById('total-pnl');
+    pnlEl.textContent = `${totalPnl >= 0 ? '+' : ''}$${totalPnl.toFixed(2)}`;
+    pnlEl.className = `card-value ${totalPnl >= 0 ? 'green' : 'red'}`;
+    document.getElementById('total-trades').textContent = `${wins}W / ${losses}L (last 20)`;
+
+    document.getElementById('open-positions').textContent = openTrades.length;
+
+    // Weights (hardcoded from brain.json - updated by cron)
+    const weights = {
+      RSI: 56, MACD: 21, EMA: 35, BB: 58, ADX: 59, Volume: 50
+    };
+    const wGrid = document.getElementById('weights-grid');
+    wGrid.innerHTML = Object.entries(weights).map(([k, v]) => `
+      <div class="weight-item">
+        <div class="weight-name">${k}</div>
+        <div class="weight-val">${v}</div>
+        <div class="weight-bar"><div class="weight-fill" style="width:${v}%"></div></div>
+      </div>
+    `).join('');
+
+    // Open positions
+    const posEl = document.getElementById('positions-container');
+    if (!openTrades.length) {
+      posEl.innerHTML = '<div class="empty">No open positions</div>';
+    } else {
+      posEl.innerHTML = `<table>
+        <thead><tr><th>Symbol</th><th>Side</th><th>Entry</th><th>Qty</th><th>Stop</th><th>Target</th><th>Status</th></tr></thead>
+        <tbody>${openTrades.map(t => `
+          <tr>
+            <td>${t.symbol}</td>
+            <td class="${t.side === 'LONG' ? 'side-long' : 'side-short'}">${t.side}</td>
+            <td>$${parseFloat(t.entry_price).toFixed(2)}</td>
+            <td>${parseFloat(t.quantity).toFixed(4)}</td>
+            <td class="red">$${parseFloat(t.stop_loss).toFixed(2)}</td>
+            <td class="green">$${parseFloat(t.take_profit).toFixed(2)}</td>
+            <td><span class="status-open">OPEN</span></td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    }
+
+    // Recent trades
+    const tEl = document.getElementById('trades-container');
+    if (!trades?.length) {
+      tEl.innerHTML = '<div class="empty">No trades found</div>';
+    } else {
+      tEl.innerHTML = `<table>
+        <thead><tr><th>Time</th><th>Symbol</th><th>Side</th><th>Entry</th><th>Exit</th><th>P&L</th><th>Status</th></tr></thead>
+        <tbody>${trades.map(t => {
+          const pnl = parseFloat(t.pnl);
+          const date = new Date(t.created_at).toLocaleDateString('en-US', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+          return `<tr>
+            <td style="color:#64748b;font-size:12px">${date}</td>
+            <td>${t.symbol}</td>
+            <td class="${t.side === 'LONG' ? 'side-long' : 'side-short'}">${t.side}</td>
+            <td>$${parseFloat(t.entry_price).toFixed(2)}</td>
+            <td>${t.exit_price ? '$' + parseFloat(t.exit_price).toFixed(2) : '—'}</td>
+            <td class="${!t.pnl ? '' : pnl >= 0 ? 'pnl-pos' : 'pnl-neg'}">${t.pnl ? (pnl >= 0 ? '+' : '') + '$' + pnl.toFixed(2) : '—'}</td>
+            <td><span class="${t.status === 'OPEN' ? 'status-open' : 'status-closed'}">${t.status}</span></td>
+          </tr>`;
+        }).join('')}</tbody></table>`;
+    }
+  }
+
+  loadData();
+  setInterval(loadData, 60000);
+</script>
+</body>
+</html>
+<!-- v1773114304 -->

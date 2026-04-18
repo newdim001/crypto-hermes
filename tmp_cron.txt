@@ -1,0 +1,3 @@
+0 20 * * * /Users/suren/.openclaw/workspace/backup.sh >> /Users/suren/.openclaw/logs/backup.log 2>&1
+0 8 * * * /Users/suren/.openclaw/workspace/scripts/daily-update.sh >> /Users/suren/.openclaw/logs/daily-update.log 2>&1
+0 * * * * cd ~/.openclaw/workspace/crypto-edge && node services/ml/ml-trading-runner.js run >> ~/.openclaw/workspace/crypto-edge/logs/trading.log 2>&1

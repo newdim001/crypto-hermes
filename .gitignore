@@ -1,0 +1,11 @@
+.vercel
+node_modules/
+.DS_Store
+logs/*.log
+data/*.json
+data/trading-state.json
+data/state.json
+data/brain.json
+!.gitkeep
+.env
+com.*.plist

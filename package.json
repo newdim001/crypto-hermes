@@ -1,0 +1,19 @@
+{
+  "name": "crypto-hermes",
+  "version": "1.0.0",
+  "description": "CryptoHermes Trading Bot - Controlled by Hermes AI (Sam)",
+  "main": "services/trading-engine.js",
+  "scripts": {
+    "start": "node services/trading-engine.js",
+    "paper": "BOT_MODE=paper node services/trading-engine.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.98.0",
+    "axios": "^1.13.6",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.6.1",
+    "pg": "^8.19.0",
+    "ws": "^8.19.0"
+  }
+}

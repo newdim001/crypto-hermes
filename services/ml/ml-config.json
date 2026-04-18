@@ -1,0 +1,47 @@
+{
+  "min_confidence": 70,
+  "min_volume_ratio": 0.8,
+  "max_rsi": 70,
+  "min_rsi": 30,
+  "stop_loss_pct": 1.5,
+  "take_profit_pct": 3.75,
+  "max_daily_loss_pct": 2,
+  "max_daily_trades": 2,
+  "best_hours_utc": [
+    7,
+    8,
+    9,
+    10,
+    13,
+    16
+  ],
+  "avoid_hours_utc": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    23
+  ],
+  "preferred_regimes": [
+    "trending"
+  ],
+  "avoid_regimes": [
+    "ranging",
+    "choppy"
+  ],
+  "indicator_weights": {
+    "rsi": 0.25,
+    "volume": 0.2,
+    "bollinger": 0.15,
+    "ema": 0.15,
+    "macd": 0.1,
+    "time_of_day": 0.1,
+    "market_regime": 0.05
+  },
+  "last_updated": "2026-04-14T03:52:16.478Z",
+  "analysis_based_on": "92 trades",
+  "overall_win_rate": 42.4
+}
