@@ -4,7 +4,8 @@
 
 const axios = require('axios');
 
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || 'sk-047742372a414b8db973aa426ff4e370';
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+
 const DEEPSEEK_BASE = 'https://api.deepseek.com/v1';
 
 // Get current market data for analysis
